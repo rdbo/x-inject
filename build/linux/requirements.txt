@@ -1,0 +1,5 @@
+libGL
+libSDL2
+libdl
+linux-headers
+zenity

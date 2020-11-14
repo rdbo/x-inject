@@ -1,0 +1,2 @@
+Windows SDK
+Visual Studio (2015 or higher)
