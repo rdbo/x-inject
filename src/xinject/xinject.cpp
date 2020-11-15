@@ -103,9 +103,7 @@ void XInject::Draw()
             {
 #				if defined(MEM_WIN)
 				OPENFILENAME ofn;
-				WCHAR filename[MAX_PATH];
 				ZeroMemory(&ofn, sizeof(OPENFILENAME));
-
 				ofn.lStructSize = sizeof(OPENFILENAME);
 				ofn.hwndOwner = NULL;
 				ofn.lpstrFile = this->lib_path;
