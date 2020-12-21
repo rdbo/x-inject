@@ -11,30 +11,7 @@ struct _mem_string_t mem_string_init()
 	mem_size_t _size = sizeof(mem_char_t) * 1;
 	_string.buffer = (mem_char_t*)malloc(_size);
 	_string.npos = (mem_size_t)-1;
-	_string.is_valid = &mem_string_is_valid;
-	_string.clear    = &mem_string_clear;
-	_string.empty    = &mem_string_empty;
-	_string.size     = &mem_string_size;
-	_string.resize   = &mem_string_resize;
-	_string.length   = &mem_string_length;
-	_string.begin    = &mem_string_begin;
-	_string.end      = &mem_string_end;
-	_string.find     = &mem_string_find;
-	_string.rfind    = &mem_string_rfind;
-	_string.count    = &mem_string_count;
-	_string.rcount   = &mem_string_rcount;
-	_string.at       = &mem_string_at;
-	_string.c_set    = &mem_string_c_set;
-	_string.value    = &mem_string_value;
-	_string.insert   = &mem_string_insert;
-	_string.replace  = &mem_string_replace;
-	_string.reverse  = &mem_string_reverse;
-	_string.c_str    = &mem_string_c_str;
-	_string.to_lower = &mem_string_to_lower;
-	_string.to_upper = &mem_string_to_upper;
-	_string.substr   = &mem_string_substr;
-	_string.compare  = &mem_string_compare;
-	_string.is_initialized = (mem_bool_t)(mem_true && (_string.buffer));
+	_string.is_initialized = (mem_bool_t)(MEM_TRUE && (_string.buffer));
 	if (!_string.is_initialized) return _string;
 	memset(_string.buffer, 0x0, _size);
 	return _string;
@@ -49,7 +26,7 @@ struct _mem_string_t mem_string_new(const mem_char_t* c_string)
 	if (!_str.buffer)
 	{
         //_str = mem_string_init();
-		_str.is_initialized = mem_false;
+		_str.is_initialized = MEM_FALSE;
 		return _str;
 	}
 	memset(_str.buffer, 0x0, size);
@@ -62,7 +39,7 @@ mem_bool_t mem_string_is_valid(struct _mem_string_t* p_string)
 {
 	return (mem_bool_t)(
 		p_string &&
-		p_string->is_initialized == mem_true &&
+		p_string->is_initialized == MEM_TRUE &&
         p_string->buffer &&
 		MEM_STR_CMP(p_string->buffer, MEM_STR(""))
 	);
@@ -70,7 +47,7 @@ mem_bool_t mem_string_is_valid(struct _mem_string_t* p_string)
 
 mem_void_t mem_string_clear(struct _mem_string_t* p_string)
 {
-	if (p_string->is_initialized == mem_true && p_string->buffer)
+	if (p_string->is_initialized == MEM_TRUE && p_string->buffer)
 		memset((void*)p_string->buffer, (int)0x0, (size_t)mem_string_size(p_string));
 }
 
@@ -79,7 +56,7 @@ mem_void_t mem_string_empty(struct _mem_string_t* p_string)
 	if (p_string && p_string->buffer)
 	{
 		free(p_string->buffer);
-		p_string->buffer = (mem_char_t*)NULL;
+		p_string->buffer = (mem_char_t*)MEM_NULL;
 	}
 }
 
@@ -96,7 +73,7 @@ mem_size_t mem_string_size(struct _mem_string_t* p_string)
 
 mem_void_t mem_string_resize(struct _mem_string_t* p_string, mem_size_t size)
 {
-	if (p_string->is_initialized != mem_true || !p_string->buffer || size == 0) return;
+	if (p_string->is_initialized != MEM_TRUE || !p_string->buffer || size == 0) return;
 	size = (size + 1) * sizeof(mem_char_t);
 	mem_char_t* _buffer = (mem_char_t*)malloc(size);
 	if (!_buffer) return;
@@ -112,7 +89,7 @@ mem_void_t mem_string_resize(struct _mem_string_t* p_string, mem_size_t size)
 
 mem_size_t mem_string_length(struct _mem_string_t* p_string)
 {
-	return (mem_size_t)(p_string->is_initialized == mem_true ? MEM_STR_LEN(p_string->buffer) : (mem_size_t)MEM_BAD_RETURN);
+	return (mem_size_t)(p_string->is_initialized == MEM_TRUE ? MEM_STR_LEN(p_string->buffer) : (mem_size_t)MEM_BAD_RETURN);
 }
 
 mem_char_t* mem_string_begin(struct _mem_string_t* p_string)
@@ -128,7 +105,7 @@ mem_char_t* mem_string_end(struct _mem_string_t* p_string)
 mem_size_t mem_string_find(struct _mem_string_t* p_string, const mem_char_t* substr, mem_size_t offset)
 {
 	mem_size_t ret = (mem_size_t)MEM_BAD_RETURN;
-	if (p_string->is_initialized != mem_true) return ret;
+	if (p_string->is_initialized != MEM_TRUE) return ret;
 	mem_size_t str_len = mem_string_length(p_string) + 1;
 	mem_size_t substr_len = (mem_size_t)MEM_STR_LEN(substr);
 	for (; offset + substr_len <= str_len; offset++)
@@ -148,7 +125,7 @@ mem_size_t mem_string_rfind(struct _mem_string_t* p_string, const mem_char_t* su
 	mem_size_t ret = (mem_size_t)MEM_BAD_RETURN;
 	if(!mem_string_is_valid(p_string)) return ret;
 	if (offset == (mem_size_t)-1) offset = mem_string_length(p_string) + 1;
-	if (!p_string || p_string->is_initialized != mem_true || !substr) return ret;
+	if (!p_string || p_string->is_initialized != MEM_TRUE || !substr) return ret;
 	mem_size_t str_len = mem_string_length(p_string) + 1;
 	mem_size_t substr_len = (mem_size_t)MEM_STR_LEN(substr);
 	for (; str_len > substr_len && offset >= substr_len && (mem_intptr_t)((offset - substr_len) * sizeof(mem_char_t)) >= 0; offset--)
@@ -304,12 +281,12 @@ struct _mem_string_t mem_string_substr(struct _mem_string_t* p_string, mem_size_
 mem_void_t mem_string_free(struct _mem_string_t* p_string)
 {
 	if(!mem_string_is_valid(p_string)) return;
-	p_string->is_initialized = mem_false;
+	p_string->is_initialized = MEM_FALSE;
 
 	if(p_string->buffer)
 	{
 		free(p_string->buffer);
-		p_string->buffer = (mem_char_t*)NULL;
+		p_string->buffer = (mem_char_t*)MEM_NULL;
 	}
 }
 
@@ -320,16 +297,14 @@ struct _mem_process_t mem_process_init()
 	struct _mem_process_t _process;
 	_process.name     = mem_string_init();
 	_process.pid      = (mem_pid_t)MEM_BAD_RETURN;
-	_process.is_valid = &mem_process_is_valid;
-	_process.compare  = &mem_process_compare;
-	_process.is_initialized = mem_true;
+	_process.is_initialized = MEM_TRUE;
 	return _process;
 }
 
 mem_bool_t mem_process_is_valid(struct _mem_process_t* p_process)
 {
 	return (mem_bool_t)(
-		p_process->is_initialized == mem_true &&
+		p_process->is_initialized == MEM_TRUE &&
 		mem_string_is_valid(&p_process->name) &&
 		p_process->pid != (mem_pid_t)MEM_BAD_RETURN
 	);
@@ -338,7 +313,7 @@ mem_bool_t mem_process_is_valid(struct _mem_process_t* p_process)
 mem_bool_t mem_process_compare(struct _mem_process_t* p_process, struct _mem_process_t process)
 {
 	return (mem_bool_t)(
-		mem_string_compare(&p_process->name, process.name) == mem_true &&
+		mem_string_compare(&p_process->name, process.name) == MEM_TRUE &&
 		p_process->pid == process.pid
 	);
 }
@@ -346,7 +321,7 @@ mem_bool_t mem_process_compare(struct _mem_process_t* p_process, struct _mem_pro
 mem_void_t mem_process_free(struct _mem_process_t* p_process)
 {
 	if(!mem_process_is_valid(p_process)) return;
-	p_process->is_initialized = mem_false;
+	p_process->is_initialized = MEM_FALSE;
 	free(p_process->name.buffer);
 }
 
@@ -357,15 +332,8 @@ mem_process_list_t mem_process_list_init()
 	mem_process_list_t proc_list;
 
 	proc_list._length  = 0;
-	proc_list._buffer  = NULL;
-	proc_list.at       = &mem_process_list_at;
-	proc_list.is_valid = &mem_process_list_is_valid;
-	proc_list.buffer   = &mem_process_list_buffer;
-	proc_list.length   = &mem_process_list_length;
-	proc_list.resize   = &mem_process_list_resize;
-	proc_list.size     = &mem_process_list_size;
-	proc_list.append   = &mem_process_list_append;
-	proc_list.is_initialized = mem_true;
+	proc_list._buffer  = MEM_NULL;
+	proc_list.is_initialized = MEM_TRUE;
 
 	return proc_list;
 }
@@ -374,7 +342,7 @@ mem_process_t mem_process_list_at(struct _mem_process_list_t* p_process_list, me
 {
 	mem_process_t ret = mem_process_init();
 	mem_size_t    length = mem_process_list_length(p_process_list);
-	ret.is_initialized = mem_false;
+	ret.is_initialized = MEM_FALSE;
 
 	if(pos < length) ret = mem_process_list_buffer(p_process_list)[pos];
 
@@ -384,7 +352,7 @@ mem_process_t mem_process_list_at(struct _mem_process_list_t* p_process_list, me
 mem_bool_t mem_process_list_is_valid(struct _mem_process_list_t* p_process_list)
 {
 	return (mem_bool_t)(
-		p_process_list != NULL &&
+		p_process_list != MEM_NULL &&
 		p_process_list->is_initialized
 	);
 }
@@ -437,7 +405,7 @@ mem_void_t mem_process_list_free(struct _mem_process_list_t* p_process_list)
 {
 	if(!p_process_list || !p_process_list->is_initialized) return;
 
-	p_process_list->is_initialized = mem_false;
+	p_process_list->is_initialized = MEM_FALSE;
 
 	if(p_process_list->_buffer)
 	{
@@ -447,7 +415,7 @@ mem_void_t mem_process_list_free(struct _mem_process_list_t* p_process_list)
 		}
 
 		free(p_process_list->_buffer);
-		p_process_list->_buffer = NULL;
+		p_process_list->_buffer = MEM_NULL;
 	}
 }
 
@@ -461,21 +429,19 @@ struct _mem_module_t mem_module_init()
 	_mod.base     = (mem_voidptr_t)MEM_BAD_RETURN;
 	_mod.size     = (mem_uintptr_t)MEM_BAD_RETURN;
 	_mod.end      = (mem_voidptr_t)MEM_BAD_RETURN;
-	_mod.is_valid = &mem_module_is_valid;
-	_mod.compare  = &mem_module_compare;
-	_mod.is_initialized = mem_true;
+	_mod.is_initialized = MEM_TRUE;
 	return _mod;
 }
 
 mem_bool_t mem_module_is_valid(struct _mem_module_t* p_mod)
 {
 	return (mem_bool_t)(
-		p_mod->is_initialized                         &&
-		MEM_STR_CMP(mem_string_c_str(&p_mod->name), MEM_STR("")) &&
-		MEM_STR_CMP(mem_string_c_str(&p_mod->path), MEM_STR("")) &&
-		p_mod->base != (mem_voidptr_t)MEM_BAD_RETURN  &&
-		p_mod->size != (mem_uintptr_t)MEM_BAD_RETURN     &&
-		p_mod->end != (mem_voidptr_t)MEM_BAD_RETURN
+		p_mod->is_initialized                        &&
+		mem_string_is_valid(&p_mod->name)            &&
+		mem_string_is_valid(&p_mod->path)            &&
+		p_mod->base != (mem_voidptr_t)MEM_BAD_RETURN &&
+		p_mod->size != (mem_uintptr_t)MEM_BAD_RETURN &&
+		p_mod->end  != (mem_voidptr_t)MEM_BAD_RETURN
 	);
 }
 
@@ -493,7 +459,7 @@ mem_bool_t mem_module_compare(struct _mem_module_t* p_mod, struct _mem_module_t 
 mem_void_t mem_module_free(struct _mem_module_t* p_mod)
 {
 	if(!mem_module_is_valid(p_mod)) return;
-	p_mod->is_initialized = mem_false;
+	p_mod->is_initialized = MEM_FALSE;
 	free(p_mod->name.buffer);
 	free(p_mod->path.buffer);
 }
@@ -504,15 +470,8 @@ mem_module_list_t mem_module_list_init()
 {
 	mem_module_list_t mod_list;
 	mod_list._length  = 0;
-	mod_list._buffer  = NULL;
-	mod_list.at       = &mem_module_list_at;
-	mod_list.is_valid = &mem_module_list_is_valid;
-	mod_list.length   = &mem_module_list_length;
-	mod_list.buffer   = &mem_module_list_buffer;
-	mod_list.size     = &mem_module_list_size;
-	mod_list.resize   = &mem_module_list_resize;
-	mod_list.append   = &mem_module_list_append;
-	mod_list.is_initialized = mem_true;
+	mod_list._buffer  = MEM_NULL;
+	mod_list.is_initialized = MEM_TRUE;
 
 	return mod_list;
 }
@@ -520,7 +479,7 @@ mem_module_list_t mem_module_list_init()
 mem_module_t mem_module_list_at(struct _mem_module_list_t* p_module_list, mem_size_t pos)
 {
 	mem_module_t ret = mem_module_init();
-	ret.is_initialized = mem_false;
+	ret.is_initialized = MEM_FALSE;
 	if(!mem_module_list_is_valid(p_module_list)) return ret;
 	mem_size_t   length = mem_module_list_length(p_module_list);
 
@@ -532,7 +491,7 @@ mem_module_t mem_module_list_at(struct _mem_module_list_t* p_module_list, mem_si
 mem_bool_t mem_module_list_is_valid(struct _mem_module_list_t* p_module_list)
 {
 	return (mem_bool_t)(
-		p_module_list != NULL &&
+		p_module_list != MEM_NULL &&
 		p_module_list->is_initialized
 	);
 }
@@ -585,7 +544,7 @@ mem_void_t mem_module_list_free(struct _mem_module_list_t* p_module_list)
 {
 	if(!p_module_list || !p_module_list->is_initialized) return;
 
-	p_module_list->is_initialized = mem_false;
+	p_module_list->is_initialized = MEM_FALSE;
 
 	if(p_module_list->_buffer)
 	{
@@ -595,7 +554,7 @@ mem_void_t mem_module_list_free(struct _mem_module_list_t* p_module_list)
 		}
 
 		free(p_module_list->_buffer);
-		p_module_list->_buffer = NULL;
+		p_module_list->_buffer = MEM_NULL;
 	}
 }
 
@@ -612,7 +571,7 @@ struct _mem_page_t mem_page_init()
 
 	page.is_valid = &mem_page_is_valid;
 
-	page.is_initialized = mem_true;
+	page.is_initialized = MEM_TRUE;
 
     return page;
 }
@@ -643,15 +602,14 @@ struct _mem_alloc_t mem_alloc_init()
 	_alloc.type       = MAP_ANON | MAP_PRIVATE;
 #   endif
 
-	_alloc.is_valid   = &mem_alloc_is_valid;
-	_alloc.is_initialized = mem_true;
+	_alloc.is_initialized = MEM_TRUE;
 	return _alloc;
 }
 
 mem_bool_t mem_alloc_is_valid(struct _mem_alloc_t* p_alloc)
 {
 	return (mem_bool_t)(
-		p_alloc->is_initialized == mem_true &&
+		p_alloc->is_initialized == MEM_TRUE &&
 		p_alloc->protection != (mem_prot_t)MEM_BAD_RETURN &&
 		p_alloc->type != (mem_prot_t)MEM_BAD_RETURN
 	);
@@ -663,12 +621,11 @@ struct _mem_lib_t mem_lib_init()
 {
 	struct _mem_lib_t _lib;
 	_lib.path     = mem_string_init();
-	_lib.is_valid = &mem_lib_is_valid;
 #   if defined(MEM_WIN)
 #   elif defined(MEM_LINUX)
 	_lib.mode = (mem_int_t)RTLD_LAZY;
 #   endif
-	_lib.is_initialized = mem_true;
+	_lib.is_initialized = MEM_TRUE;
 	return _lib;
 }
 
@@ -681,7 +638,7 @@ struct _mem_lib_t  mem_lib_new(mem_string_t path, mem_int_t mode)
 #   elif defined(MEM_LINUX)
 	_lib.mode = (mem_int_t)mode;
 #   endif
-	_lib.is_initialized = mem_true;
+	_lib.is_initialized = MEM_TRUE;
 	return _lib;
 }
 
@@ -694,7 +651,7 @@ struct _mem_lib_t  mem_lib_new2(mem_char_t* path, mem_int_t mode)
 #   elif defined(MEM_LINUX)
 	_lib.mode = (mem_int_t)mode;
 #   endif
-	_lib.is_initialized = mem_true;
+	_lib.is_initialized = MEM_TRUE;
 	return _lib;
 }
 
@@ -703,7 +660,7 @@ mem_bool_t mem_lib_is_valid(struct _mem_lib_t* p_lib)
 	return (mem_bool_t)(
 		p_lib &&
 		p_lib->is_initialized &&
-		MEM_STR_CMP(mem_string_c_str(&p_lib->path), MEM_STR(""))
+		mem_string_is_valid(&p_lib->path)
 	);
 }
 
@@ -711,12 +668,87 @@ mem_void_t mem_lib_free(struct _mem_lib_t* p_lib)
 {
 	if(!p_lib || !p_lib->is_initialized) return;
 
-	p_lib->is_initialized = mem_false;
+	p_lib->is_initialized = MEM_FALSE;
 
 	if(mem_string_is_valid(&p_lib->path))
 	{
 		mem_string_free(&p_lib->path);
 	}
+}
+
+//mem_vtable_t
+
+struct _mem_vtable_t mem_vtable_init()
+{
+	struct _mem_vtable_t vmt;
+	vmt.vtable         = (mem_voidptr_t*)MEM_NULL;
+	vmt.orig_vtable    = (mem_voidptr_t*)MEM_NULL;
+	vmt.size           = (mem_size_t)-1;
+	vmt.is_initialized = MEM_TRUE;
+	return vmt;
+}
+
+struct _mem_vtable_t mem_vtable_new(mem_voidptr_t* p_vtable, mem_size_t size)
+{
+	struct _mem_vtable_t vmt;
+	vmt.vtable = p_vtable;
+	vmt.size   = size;
+	mem_size_t vtable_size = vmt.size * sizeof(mem_voidptr_t);
+	vmt.orig_vtable = (mem_voidptr_t*)malloc(vtable_size);
+	mem_in_read(vmt.vtable, vmt.orig_vtable, vtable_size);
+#	if defined(MEM_WIN)
+	mem_in_protect(vmt.vtable, vtable_size, PAGE_EXECUTE_READWRITE);
+#	elif defined(MEM_LINUX)
+	mem_in_protect(vmt.vtable, vtable_size, PROT_EXEC | PROT_READ | PROT_WRITE);
+#	endif
+	vmt.is_initialized = MEM_TRUE;
+	return vmt;
+}
+
+mem_bool_t mem_vtable_is_valid(struct _mem_vtable_t* p_vmt)
+{
+	return (mem_bool_t)(
+		p_vmt                                    &&
+		p_vmt->is_initialized                    &&
+		p_vmt->vtable                            &&
+		p_vmt->vtable != (mem_voidptr_t*)-1      &&
+		p_vmt->orig_vtable                       &&
+		p_vmt->orig_vtable != (mem_voidptr_t*)-1 &&
+		p_vmt->size                              &&
+		p_vmt->size != (mem_size_t)-1
+	);
+}
+
+mem_bool_t mem_vtable_hook(struct _mem_vtable_t* p_vmt, mem_size_t index, mem_voidptr_t dst)
+{
+	if(!mem_vtable_is_valid(p_vmt) || index > p_vmt->size)
+		return MEM_FALSE;
+	
+	p_vmt->orig_vtable[index] = p_vmt->vtable[index];
+	p_vmt->vtable[index] = dst;
+	return MEM_TRUE;
+}
+
+mem_bool_t mem_vtable_restore(struct _mem_vtable_t* p_vmt, mem_size_t index)
+{
+	if(!mem_vtable_is_valid(p_vmt) || index > p_vmt->size)
+		return MEM_FALSE;
+	
+	p_vmt->vtable[index] = p_vmt->orig_vtable[index];
+	return MEM_TRUE;
+}
+
+mem_void_t mem_vtable_free(struct _mem_vtable_t* p_vtable)
+{
+	if(!p_vtable) return;
+
+	if(p_vtable->orig_vtable)
+		free(p_vtable->orig_vtable);
+
+	p_vtable->is_initialized = MEM_FALSE;
+	p_vtable->vtable = (mem_voidptr_t*)MEM_NULL;
+	p_vtable->orig_vtable = (mem_voidptr_t*)MEM_NULL;
+	p_vtable->size = (mem_size_t)-1;
 }
 
 //libmem
@@ -853,6 +885,7 @@ mem_string_t mem_ex_get_process_name(mem_pid_t pid)
 	close(fd);
     */
 
+   	/*
     char path_buffer[64];
 	snprintf(path_buffer, sizeof(path_buffer) - 1, "/proc/%i/maps", pid);
 	int fd = open(path_buffer, O_RDONLY);
@@ -873,6 +906,28 @@ mem_string_t mem_ex_get_process_name(mem_pid_t pid)
 	process_name = mem_string_substr(&file_buffer, process_name_pos, process_name_end);
 	mem_string_empty(&file_buffer);
 	close(fd);
+	*/
+
+	char path[64];
+	memset(path, 0x0, sizeof(path));
+	snprintf(path, sizeof(path), "/proc/%i/exe", pid);
+
+	char buffer[PATH_MAX];
+	memset(buffer, 0x0, sizeof(buffer));
+	readlink(path, buffer, sizeof(buffer));
+	char* temp = buffer;
+    char* proc_name;
+    while((temp = strstr(temp, "/")) && temp != (char*)-1)
+    {
+        proc_name = &temp[1];
+        temp = proc_name;
+    }
+
+	if(!proc_name || proc_name == (char*)NULL)
+		return process_name;
+
+	mem_string_free(&process_name);
+	process_name = mem_string_new(proc_name);
 
 #   endif
 	return process_name;
@@ -926,6 +981,7 @@ mem_process_list_t mem_ex_get_process_list()
 					mem_process_t process = mem_process_init();
 					process.pid  = pid;
 					process.name = process_name;
+					process.handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, process.pid);
 
 					mem_process_list_append(&proc_list, process);
 				}
@@ -1056,11 +1112,11 @@ mem_module_t mem_ex_get_module(mem_process_t process, mem_string_t module_name)
 	mem_uintptr_t end_address = (mem_uintptr_t)MEM_BAD_RETURN;
 
 #   if defined(MEM_86)
-	base_address = strtoul(mem_string_c_str(&base_address_str), NULL, 16);
-	end_address = strtoul(mem_string_c_str(&end_address_str), NULL, 16);
+	base_address = strtoul(mem_string_c_str(&base_address_str), MEM_NULL, 16);
+	end_address = strtoul(mem_string_c_str(&end_address_str), MEM_NULL, 16);
 #   elif defined(MEM_64)
-	base_address = strtoul(mem_string_c_str(&base_address_str), NULL, 16);
-	end_address = strtoul(mem_string_c_str(&end_address_str), NULL, 16);
+	base_address = strtoul(mem_string_c_str(&base_address_str), MEM_NULL, 16);
+	end_address = strtoul(mem_string_c_str(&end_address_str), MEM_NULL, 16);
 #   endif
 
 	mem_module_handle_t handle = (mem_module_handle_t)MEM_BAD_RETURN;
@@ -1163,11 +1219,11 @@ mem_module_list_t mem_ex_get_module_list(mem_process_t process)
 		mem_uintptr_t end_address = (mem_uintptr_t)MEM_BAD_RETURN;
 
 #		if defined(MEM_86)
-		base_address = strtoul(mem_string_c_str(&base_address_str), NULL, 16);
-		end_address = strtoul(mem_string_c_str(&end_address_str), NULL, 16);
+		base_address = strtoul(mem_string_c_str(&base_address_str), MEM_NULL, 16);
+		end_address = strtoul(mem_string_c_str(&end_address_str), MEM_NULL, 16);
 #   	elif defined(MEM_64)
-		base_address = strtoul(mem_string_c_str(&base_address_str), NULL, 16);
-		end_address = strtoul(mem_string_c_str(&end_address_str), NULL, 16);
+		base_address = strtoul(mem_string_c_str(&base_address_str), MEM_NULL, 16);
+		end_address = strtoul(mem_string_c_str(&end_address_str), MEM_NULL, 16);
 #   	endif
 
 		mem_module_handle_t handle = (mem_module_handle_t)MEM_BAD_RETURN;
@@ -1245,9 +1301,9 @@ mem_page_t mem_ex_get_page(mem_process_t process, mem_voidptr_t src)
 		{
 			mem_string_t virt_start_str = mem_string_substr(&file_buffer, 0, file_size);
 #			if defined(MEM_86)
-			virt_start = (mem_uintptr_t)strtoul(mem_string_c_str(&virt_start_str), NULL, 16);
+			virt_start = (mem_uintptr_t)strtoul(mem_string_c_str(&virt_start_str), MEM_NULL, 16);
 #			elif defined(MEM_64)
-			virt_start = (mem_uintptr_t)strtoull(mem_string_c_str(&virt_start_str), NULL, 16);
+			virt_start = (mem_uintptr_t)strtoull(mem_string_c_str(&virt_start_str), MEM_NULL, 16);
 #			endif
 
 			if((mem_uintptr_t)src < virt_start) return page;
@@ -1304,7 +1360,7 @@ mem_page_t mem_ex_get_page(mem_process_t process, mem_voidptr_t src)
 
 mem_bool_t mem_ex_is_process_running(mem_process_t process)
 {
-	mem_bool_t ret = mem_false;
+	mem_bool_t ret = MEM_FALSE;
 	if (!mem_process_is_valid(&process)) return ret;
 #   if defined(MEM_WIN)
 	DWORD exit_code;
@@ -1326,7 +1382,7 @@ mem_int_t mem_ex_read(mem_process_t process, mem_voidptr_t src, mem_voidptr_t ds
 	mem_int_t ret = (mem_int_t)MEM_BAD_RETURN;
 	if (!mem_process_is_valid(&process)) return ret;
 #   if defined(MEM_WIN)
-	ret = (mem_int_t)(ReadProcessMemory(process.handle, (LPCVOID)src, (LPVOID)dst, (SIZE_T)size, NULL) != 0 ? !MEM_BAD_RETURN : MEM_BAD_RETURN);
+	ret = (mem_int_t)(ReadProcessMemory(process.handle, (LPCVOID)src, (LPVOID)dst, (SIZE_T)size, MEM_NULL) != 0 ? !MEM_BAD_RETURN : MEM_BAD_RETURN);
 #   elif defined(MEM_LINUX)
 	struct iovec iosrc;
 	struct iovec iodst;
@@ -1345,7 +1401,7 @@ mem_int_t mem_ex_write(mem_process_t process, mem_voidptr_t dst, mem_voidptr_t s
 	mem_int_t ret = (mem_int_t)MEM_BAD_RETURN;
 	if (!mem_process_is_valid(&process)) return ret;
 #   if defined(MEM_WIN)
-	ret = (mem_int_t)(WriteProcessMemory(process.handle, (LPVOID)dst, (LPCVOID)src, (SIZE_T)size, NULL) != 0 ? !MEM_BAD_RETURN : MEM_BAD_RETURN);
+	ret = (mem_int_t)(WriteProcessMemory(process.handle, (LPVOID)dst, (LPCVOID)src, (SIZE_T)size, MEM_NULL) != 0 ? !MEM_BAD_RETURN : MEM_BAD_RETURN);
 #   elif defined(MEM_LINUX)
 	struct iovec iosrc;
 	struct iovec iodst;
@@ -1399,10 +1455,10 @@ mem_voidptr_t mem_ex_syscall(mem_process_t process, mem_int_t syscall_n, mem_voi
     mem_uintptr_t old_data;
 	mem_uintptr_t injection_buffer;
 	memcpy(&injection_buffer, injection_buf, sizeof(injection_buffer));
-    ptrace(PTRACE_ATTACH, process.pid, NULL, NULL);
+    ptrace(PTRACE_ATTACH, process.pid, MEM_NULL, MEM_NULL);
     wait(&status);
 
-    ptrace(PTRACE_GETREGS, process.pid, NULL, &old_regs);
+    ptrace(PTRACE_GETREGS, process.pid, MEM_NULL, &old_regs);
     regs = old_regs;
 
 #   if defined(MEM_86)
@@ -1425,13 +1481,13 @@ mem_voidptr_t mem_ex_syscall(mem_process_t process, mem_int_t syscall_n, mem_voi
     injection_addr = (mem_voidptr_t)regs.rip;
 #   endif
 
-	old_data = (mem_uintptr_t)ptrace(PTRACE_PEEKDATA, process.pid, (void*)((mem_uintptr_t)injection_addr), NULL);
+	old_data = (mem_uintptr_t)ptrace(PTRACE_PEEKDATA, process.pid, (void*)((mem_uintptr_t)injection_addr), MEM_NULL);
 	ptrace(PTRACE_POKEDATA, process.pid, (void*)((mem_uintptr_t)injection_addr), (injection_buffer));
 
-    ptrace(PTRACE_SETREGS, process.pid, NULL, &regs);
-    ptrace(PTRACE_SINGLESTEP, process.pid, NULL, NULL);
+    ptrace(PTRACE_SETREGS, process.pid, MEM_NULL, &regs);
+    ptrace(PTRACE_SINGLESTEP, process.pid, MEM_NULL, MEM_NULL);
     waitpid(process.pid, &status, WSTOPPED);
-    ptrace(PTRACE_GETREGS, process.pid, NULL, &regs);
+    ptrace(PTRACE_GETREGS, process.pid, MEM_NULL, &regs);
 #   if defined(MEM_86)
     ret = (mem_voidptr_t)regs.eax;
 #   elif defined(MEM_64)
@@ -1440,8 +1496,8 @@ mem_voidptr_t mem_ex_syscall(mem_process_t process, mem_int_t syscall_n, mem_voi
 
 	ptrace(PTRACE_POKEDATA, process.pid, (void*)((mem_uintptr_t)injection_addr), (old_data));
 
-    ptrace(PTRACE_SETREGS, process.pid, NULL, &old_regs);
-    ptrace(PTRACE_DETACH, process.pid, NULL, NULL);
+    ptrace(PTRACE_SETREGS, process.pid, MEM_NULL, &old_regs);
+    ptrace(PTRACE_DETACH, process.pid, MEM_NULL, MEM_NULL);
 #   endif
     return ret;
 }
@@ -1452,10 +1508,10 @@ mem_int_t mem_ex_protect(mem_process_t process, mem_voidptr_t src, mem_size_t si
 	if (!mem_process_is_valid(&process)) return ret;
 #	if defined(MEM_WIN)
 	DWORD old_protect;
-	if (process.handle == (HANDLE)INVALID_HANDLE_VALUE || src <= (mem_voidptr_t)NULL || size == 0 || protection <= 0) return ret;
+	if (process.handle == (HANDLE)INVALID_HANDLE_VALUE || src <= (mem_voidptr_t)MEM_NULL || size == 0 || protection <= 0) return ret;
 	ret = (mem_int_t)(VirtualProtectEx(process.handle, (LPVOID)src, (SIZE_T)size, (DWORD)protection, &old_protect) != 0 ? !MEM_BAD_RETURN : MEM_BAD_RETURN);
 #	elif defined(MEM_LINUX)
-	ret = (mem_int_t)(mem_ex_syscall(process, __NR_mprotect, src, (mem_voidptr_t)size, (mem_voidptr_t)(mem_uintptr_t)protection, NULL, NULL, NULL) == 0 ? !MEM_BAD_RETURN : MEM_BAD_RETURN);
+	ret = (mem_int_t)(mem_ex_syscall(process, __NR_mprotect, src, (mem_voidptr_t)size, (mem_voidptr_t)(mem_uintptr_t)protection, MEM_NULL, MEM_NULL, MEM_NULL) == 0 ? !MEM_BAD_RETURN : MEM_BAD_RETURN);
 #	endif
 	return ret;
 }
@@ -1465,8 +1521,8 @@ mem_voidptr_t mem_ex_allocate(mem_process_t process, mem_size_t size, mem_prot_t
 	mem_voidptr_t alloc_addr = (mem_voidptr_t)MEM_BAD_RETURN;
 	if (!mem_process_is_valid(&process) || protection == 0) return alloc_addr;
 #   if defined(MEM_WIN)
-	alloc_addr = (mem_voidptr_t)VirtualAllocEx(process.handle, NULL, size, MEM_COMMIT | MEM_RESERVE, protection);
-    if(alloc_addr == (mem_voidptr_t)NULL)
+	alloc_addr = (mem_voidptr_t)VirtualAllocEx(process.handle, MEM_NULL, size, MEM_COMMIT | MEM_RESERVE, protection);
+    if(alloc_addr == (mem_voidptr_t)MEM_NULL)
         alloc_addr = (mem_voidptr_t)MEM_BAD_RETURN;
 #   elif defined(MEM_LINUX)
     mem_int_t syscall_n = -1;
@@ -1494,7 +1550,7 @@ mem_int_t mem_ex_deallocate(mem_process_t process, mem_voidptr_t src, mem_size_t
 #   if defined(MEM_WIN)
 	ret = (mem_int_t)(VirtualFreeEx(process.handle, src, 0, MEM_RELEASE) != 0 ? !MEM_BAD_RETURN : MEM_BAD_RETURN);
 #   elif defined(MEM_LINUX)
-	ret = (mem_int_t)(mem_ex_syscall(process, __NR_munmap, src, (mem_voidptr_t)size, NULL, NULL, NULL, NULL) != MAP_FAILED ? !MEM_BAD_RETURN : MEM_BAD_RETURN);
+	ret = (mem_int_t)(mem_ex_syscall(process, __NR_munmap, src, (mem_voidptr_t)size, MEM_NULL, MEM_NULL, MEM_NULL, MEM_NULL) != MAP_FAILED ? !MEM_BAD_RETURN : MEM_BAD_RETURN);
 #   endif
 
 	return ret;
@@ -1536,7 +1592,7 @@ mem_voidptr_t mem_ex_pattern_scan(mem_process_t process, mem_byte_t* pattern, me
 
 		for(mem_uintptr_t j = 0; i + j >= (mem_uintptr_t)begin && i + j < (mem_uintptr_t)end && j + pattern_size < page_size; j++)
 		{
-			mem_int_t found = mem_true;
+			mem_int_t found = MEM_TRUE;
 
 			for(mem_uintptr_t k = 0; k < pattern_size; k++)
 			{
@@ -1578,8 +1634,8 @@ mem_int_t mem_ex_detour(mem_process_t process, mem_voidptr_t src, mem_voidptr_t 
 
 	mem_byte_t* detour_buffer = (mem_byte_t*)mem_in_allocate(detour_size, protection);
 	mem_in_set(detour_buffer, 0x0, detour_size);
-	mem_in_detour(detour_buffer, dst, size, method, NULL);
-	if (stolen_bytes != NULL)
+	mem_in_detour(detour_buffer, dst, size, method, MEM_NULL);
+	if (stolen_bytes != MEM_NULL)
 	{
 		mem_ex_read(process, src, (mem_voidptr_t)stolen_bytes, size);
 	}
@@ -1607,7 +1663,7 @@ mem_voidptr_t mem_ex_detour_trampoline(mem_process_t process, mem_voidptr_t src,
 	if (!gateway || gateway == (mem_voidptr_t)MEM_BAD_RETURN) return (mem_voidptr_t)MEM_BAD_RETURN;
 	mem_ex_set(process, gateway, 0x0, gateway_size);
 	mem_ex_write(process, gateway, src, size);
-	mem_ex_detour(process, (mem_voidptr_t)((mem_uintptr_t)gateway + size), (mem_voidptr_t)((mem_uintptr_t)src + size), detour_size, method, NULL);
+	mem_ex_detour(process, (mem_voidptr_t)((mem_uintptr_t)gateway + size), (mem_voidptr_t)((mem_uintptr_t)src + size), detour_size, method, MEM_NULL);
 	mem_ex_detour(process, src, dst, size, method, stolen_bytes);
 
 	return gateway;
@@ -1647,7 +1703,7 @@ mem_module_t mem_ex_load_library(mem_process_t process, mem_lib_t lib)
 
 	mem_string_t libc_str = mem_string_new("/libc.");
     mem_module_t libc_ex;
-    mem_bool_t   retry = mem_false;
+    mem_bool_t   retry = MEM_FALSE;
     
     L_GET_LIBC_MOD:
     libc_ex = mem_ex_get_module(process, libc_str);
@@ -1656,7 +1712,7 @@ mem_module_t mem_ex_load_library(mem_process_t process, mem_lib_t lib)
     {
         if(!retry)
         {
-            retry = mem_true;
+            retry = MEM_TRUE;
             libc_str = mem_string_new("/libc-");
             goto L_GET_LIBC_MOD;
         }
@@ -1711,9 +1767,9 @@ mem_module_t mem_ex_load_library(mem_process_t process, mem_lib_t lib)
     struct user_regs_struct old_regs, regs;
     mem_module_handle_t handle = (mem_voidptr_t)-1;
 
-    ptrace(PTRACE_ATTACH, process.pid, NULL, NULL);
+    ptrace(PTRACE_ATTACH, process.pid, MEM_NULL, MEM_NULL);
     wait(&status);
-    ptrace(PTRACE_GETREGS, process.pid, NULL, &old_regs);
+    ptrace(PTRACE_GETREGS, process.pid, MEM_NULL, &old_regs);
 
     regs = old_regs;
 
@@ -1729,10 +1785,10 @@ mem_module_t mem_ex_load_library(mem_process_t process, mem_lib_t lib)
     regs.rip = (mem_uintptr_t)inj_addr;
 #   endif
 
-    ptrace(PTRACE_SETREGS, process.pid, NULL, &regs);
-    ptrace(PTRACE_CONT, process.pid, NULL, NULL);
+    ptrace(PTRACE_SETREGS, process.pid, MEM_NULL, &regs);
+    ptrace(PTRACE_CONT, process.pid, MEM_NULL, MEM_NULL);
     waitpid(process.pid, &status, WSTOPPED);
-    ptrace(PTRACE_GETREGS, process.pid, NULL, &regs);
+    ptrace(PTRACE_GETREGS, process.pid, MEM_NULL, &regs);
 
 #   if defined(MEM_86)
     handle = (mem_module_handle_t)regs.eax;
@@ -1743,8 +1799,8 @@ mem_module_t mem_ex_load_library(mem_process_t process, mem_lib_t lib)
     if(handle == (mem_module_handle_t)dlopen_ex || (mem_uintptr_t)handle > (mem_uintptr_t)-256)
         handle = (mem_module_handle_t)MEM_BAD_RETURN;
 
-    ptrace(PTRACE_SETREGS, process.pid, NULL, &old_regs);
-    ptrace(PTRACE_DETACH, process.pid, NULL, NULL);
+    ptrace(PTRACE_SETREGS, process.pid, MEM_NULL, &old_regs);
+    ptrace(PTRACE_DETACH, process.pid, MEM_NULL, MEM_NULL);
 
     //---
 
@@ -1812,7 +1868,7 @@ mem_string_t mem_in_get_process_name()
 	mem_string_t process_name = mem_string_init();
 #   if defined(MEM_WIN)
 	mem_char_t buffer[MAX_PATH];
-	GetModuleFileName(NULL, buffer, sizeof(buffer) / sizeof(mem_char_t));
+	GetModuleFileName(MEM_NULL, buffer, sizeof(buffer) / sizeof(mem_char_t));
 	process_name = mem_string_new(buffer);
 	process_name = mem_string_substr(&process_name, mem_string_rfind(&process_name, MEM_STR("\\"), mem_string_length(&process_name)) + 1, mem_string_length(&process_name));
 #   elif defined(MEM_LINUX)
@@ -1828,7 +1884,7 @@ mem_module_t mem_in_get_module(mem_string_t module_name)
 	MODULEINFO module_info;
 	HMODULE hmod = GetModuleHandle(mem_string_c_str(&module_name));
 	HANDLE cur_handle = mem_in_get_process().handle;
-	if (hmod == NULL) return modinfo;
+	if (hmod == MEM_NULL) return modinfo;
 	mem_char_t path_buffer[MAX_PATH];
 	GetModuleInformation(cur_handle, hmod, &module_info, sizeof(module_info));
 	GetModuleFileName(hmod, path_buffer, sizeof(path_buffer) / sizeof(mem_char_t));
@@ -1921,9 +1977,9 @@ mem_voidptr_t mem_in_allocate(mem_size_t size, mem_prot_t protection)
 {
 	mem_voidptr_t addr = (mem_voidptr_t)MEM_BAD_RETURN;
 #   if defined(MEM_WIN)
-	addr = (mem_voidptr_t)VirtualAlloc(NULL, (SIZE_T)size, MEM_COMMIT | MEM_RESERVE, protection);
+	addr = (mem_voidptr_t)VirtualAlloc(MEM_NULL, (SIZE_T)size, MEM_COMMIT | MEM_RESERVE, protection);
 #   elif defined(MEM_LINUX)
-	addr = (mem_voidptr_t)mmap(NULL, size, protection, MAP_PRIVATE | MAP_ANON, -1, 0);
+	addr = (mem_voidptr_t)mmap(MEM_NULL, size, protection, MAP_PRIVATE | MAP_ANON, -1, 0);
 #   endif
 
 	return addr;
@@ -1968,7 +2024,7 @@ mem_voidptr_t mem_in_pattern_scan(mem_byte_t* pattern, mem_string_t mask, mem_vo
 
 	for(mem_uintptr_t i = (mem_uintptr_t)begin; i + pattern_size < (mem_uintptr_t)end; i++)
 	{
-		mem_int_t found = mem_true;
+		mem_int_t found = MEM_TRUE;
 
 		for(mem_uintptr_t j = 0; j < pattern_size; j++)
 		{
@@ -2023,7 +2079,7 @@ mem_int_t mem_in_detour(mem_voidptr_t src, mem_voidptr_t dst, mem_size_t size, m
 #	endif
 	if (detour_size == (mem_size_t)MEM_BAD_RETURN || size < detour_size || mem_in_protect(src, size, protection) == MEM_BAD_RETURN) return ret;
 
-	if (stolen_bytes != NULL)
+	if (stolen_bytes != MEM_NULL)
 	{
 		*stolen_bytes = (mem_byte_t*)malloc(size);
 		mem_in_read(src, (mem_voidptr_t)*stolen_bytes, size);
@@ -2119,7 +2175,7 @@ mem_voidptr_t mem_in_detour_trampoline(mem_voidptr_t src, mem_voidptr_t dst, mem
 	if (!gateway || gateway == (mem_voidptr_t)MEM_BAD_RETURN) return (mem_voidptr_t)MEM_BAD_RETURN;
 	mem_in_set(gateway, 0x0, gateway_size);
 	mem_in_write(gateway, src, size);
-	mem_in_detour((mem_voidptr_t)((mem_uintptr_t)gateway + size), (mem_voidptr_t)((mem_uintptr_t)src + size), detour_size, method, NULL);
+	mem_in_detour((mem_voidptr_t)((mem_uintptr_t)gateway + size), (mem_voidptr_t)((mem_uintptr_t)src + size), detour_size, method, MEM_NULL);
 	mem_in_detour(src, dst, size, method, stolen_bytes);
 
 	return gateway;
@@ -2169,7 +2225,7 @@ mem_void_t mem_in_unload_library(mem_module_t mod)
 mem_voidptr_t mem_in_get_symbol(mem_module_t mod, const char* symbol)
 {
 	mem_voidptr_t addr = (mem_voidptr_t)MEM_BAD_RETURN;
-	if (mem_module_is_valid(&mod) == mem_false)
+	if (mem_module_is_valid(&mod) == MEM_FALSE)
 		return addr;
 
 #   if defined(MEM_WIN)
